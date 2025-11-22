@@ -1,0 +1,11 @@
+imu_topic: "/mavros/imu/data_raw"
+imu_rate: 50  # Update rate in Hz - adjust based on your IMU
+measure_rate: 50  # Measurement rate - usually same as imu_rate
+
+# Gyroscope Noise Parameters
+gyroscope_noise_density: 0.0    # Angle Random Walk (rad/s/sqrt(Hz))
+gyroscope_bias_instability: 0.0 # Bias Random Walk / Bias Instability (rad/s)
+
+# Accelerometer Noise Parameters
+accelerometer_noise_density: 0.0 # Velocity Random Walk (m/s^2/sqrt(Hz))
+accelerometer_bias_instability: 0.0 # Bias Random Walk / Bias Instability (m/s^2)

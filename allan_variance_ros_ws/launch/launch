@@ -1,0 +1,33 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="imu_topic" default="/mavros/imu/data_raw" />
+    <arg name="bag_duration" default="10800" />  <!-- 3 hours in seconds -->
+    <arg name="output_dir" default="/data" />
+    <arg name="bag_file" default="$(arg output_dir)/imu_data.bag" />
+    <arg name="config_file" default="/config/imu_config.yaml" />
+    
+    <!-- Step 1: Record IMU data to a rosbag -->
+    <!-- This will run for the specified duration and then stop -->
+    <node pkg="rosbag" type="record" name="imu_recorder"
+          args="-O $(arg bag_file) $(arg imu_topic) --duration=$(arg bag_duration)"
+          output="screen" />
+    
+    <!-- Step 2: Cook the bag (reorganize by timestamp) -->
+    <!-- This should run after recording is complete -->
+    <node pkg="allan_variance_ros" type="cookbag.py" name="cookbag"
+          args="--input $(arg bag_file) --output $(arg output_dir)/cooked_imu_data.bag"
+          launch-prefix="bash -c 'sleep $(arg bag_duration); sleep 5;'"
+          output="screen" />
+    
+    <!-- Step 3: Run Allan Variance computation -->
+    <node pkg="allan_variance_ros" type="allan_variance" name="allan_variance"
+          args="$(arg output_dir) $(arg config_file)"
+          launch-prefix="bash -c 'sleep $(eval arg('bag_duration') + 120);'"
+          output="screen" />
+    
+    <!-- Step 4: Run analysis and generate imu.yaml -->
+    <node pkg="allan_variance_ros" type="analysis.py" name="allan_analysis"
+          args="--data $(arg output_dir)/allan_variance.csv --config $(arg config_file)"
+          launch-prefix="bash -c 'sleep $(eval arg('bag_duration') + 240);'"
+          output="screen" />
+</launch>

@@ -1,0 +1,13 @@
+<launch>
+  <node pkg="ros_picamera2" type="picamera2_ros_node" name="picamera_left" output="screen">
+    <param name="camera_id" value="0" />
+    <remap from="~/image_raw" to="/camera/left/image_raw" />
+    <remap from="~/camera_info" to="/camera/left/camera_info" />
+  </node>
+
+  <node pkg="ros_picamera2" type="picamera2_ros_node" name="picamera_right" output="screen">
+    <param name="camera_id" value="1" />
+    <remap from="~/image_raw" to="/camera/right/image_raw" />
+    <remap from="~/camera_info" to="/camera/right/camera_info" />
+  </node>
+</launch>

@@ -1,0 +1,12 @@
+<launch>
+    <node name="ORB_SLAM3" pkg="ORB_SLAM3" type="Mono_Inertial" output="screen">
+
+        <param name="vocabulary_file" type="string" value="/root/ORB_SLAM3/Vocabulary/ORBvoc.txt" />
+
+        <param name="settings_file" type="string" value="/root/orbslam3_config/pi_camera_inertial.yaml" />
+
+        <remap from="/camera/image_raw" to="/usb_cam/image_raw" />
+        <remap from="/imu" to="/mavros/imu/data" />
+
+    </node>
+</launch>

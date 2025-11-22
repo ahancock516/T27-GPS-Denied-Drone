@@ -1,0 +1,65 @@
+# MyPiCamera_Inertial.yaml
+# Template for ORB-SLAM3 Monocular-Inertial Mode
+
+#--------------------------------------------------------------------------------------------
+# Camera Parameters
+#--------------------------------------------------------------------------------------------
+Camera.type: "PinHole"
+Camera.fx: 500.0         # Your calibrated focal length x
+Camera.fy: 500.0         # Your calibrated focal length y
+Camera.cx: 320.0         # Your calibrated principal point x
+Camera.cy: 240.0         # Your calibrated principal point y
+
+# Camera distortion parameters (k1, k2, p1, p2, k3)
+Camera.k1: 0.0
+Camera.k2: 0.0
+Camera.p1: 0.0
+Camera.p2: 0.0
+Camera.k3: 0.0
+
+Camera.width: 640
+Camera.height: 480
+Camera.fps: 30.0
+Camera.RGB: 1 # 1 for color images, 0 for grayscale
+
+#--------------------------------------------------------------------------------------------
+# IMU Parameters - VERY IMPORTANT - GET THESE FROM CALIBRATION
+#--------------------------------------------------------------------------------------------
+# Transformation from camera to IMU (body frame)
+# This is T_imu_cam (the transformation that maps points from camera to imu frame)
+# It's a 4x4 matrix in row-major order.
+T_cam_imu:
+  [0.0148655429818, -0.999880929698, 0.00414029679422, -0.0216401454963,
+   0.999880929698, 0.0148655429818, 0.00414029679422, -0.064676986768,
+   -0.00414029679422, 0.00414029679422, 0.999980929698, 0.00981073058949,
+   0.0, 0.0, 0.0, 1.0]
+
+# IMU noise characteristics (get from imu_utils or sensor datasheet)
+IMU.Frequency: 200.0 # Your IMU's publishing frequency
+IMU.NoiseGyro: 1.6968e-04 # Gyroscope noise density (rad/s/sqrt(Hz))
+IMU.NoiseAcc: 2.0000e-03 # Accelerometer noise density (m/s^2/sqrt(Hz))
+IMU.GyroWalk: 1.9393e-05 # Gyroscope random walk (rad/s^2/sqrt(Hz))
+IMU.AccWalk: 3.0000e-03 # Accelerometer random walk (m/s^3/sqrt(Hz))
+
+#--------------------------------------------------------------------------------------------
+# ORB-SLAM3 Feature Parameters
+#--------------------------------------------------------------------------------------------
+ORBextractor.nFeatures: 1200
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
+
+#--------------------------------------------------------------------------------------------
+# Viewer Parameters
+#--------------------------------------------------------------------------------------------
+Viewer.KeyFrameSize: 0.05
+Viewer.KeyFrameLineWidth: 1
+Viewer.GraphLineWidth: 0.9
+Viewer.PointSize: 2
+Viewer.CameraSize: 0.08
+Viewer.CameraLineWidth: 3
+Viewer.ViewpointX: 0
+Viewer.ViewpointY: -0.7
+Viewer.ViewpointZ: -1.8
+Viewer.ViewpointF: 500

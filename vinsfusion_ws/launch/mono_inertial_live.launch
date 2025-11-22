@@ -1,0 +1,29 @@
+<launch>
+
+    <param name="/use_sim_time" value="false"/>
+
+    <!-- Config path -->
+    <arg name="config_path" default="/root/catkin_ws/src/VINS-Fusion/config/vins_mono_imu_config.yaml" />
+    <arg name="output_bag_name" default="new_odometry_output.bag" />
+    <arg name="input_bag_name" default="new_vio_capture.bag" />
+
+    <!-- RVIZ Node - commented out -->
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d /root/catkin_ws/src/VINS-Fusion/config/vins_rviz_config.rviz" /> -->
+
+    <!-- VINS Estimator Node -->
+    <node name="vins_estimator" pkg="vins" type="vins_node" output="screen" args="$(arg config_path)" />
+
+    <!-- Loop Fusion Node for Loop Closure -->
+    <node name="loop_fusion" pkg="loop_fusion" type="loop_fusion_node" output="screen" args="$(arg config_path)" />
+
+    <!-- Record VINS odometry output -->
+    <node pkg="rosbag" type="record" name="vins_odometry_recorder"
+        args="-o /root/rosbags/$(arg output_bag_name) /vins_estimator/odometry"
+        launch-prefix="bash -c 'sleep 5; $0 $@' "/>
+    
+    <!-- Record to rosbag-->
+    <node pkg="rosbag" type="record" name="rosbag_recorder"
+        args="-o /root/rosbags/vins_run.bag /mono_camera/image_raw /mavros/imu/data_raw /mavros/global_position/raw/fix /mavros/global_position/compass_hdg /mavros/distance_sensor/rangefinder_pub --duration=300"
+        launch-prefix="bash -c 'sleep 5; $0 $@' "/>
+
+</launch>

@@ -1,0 +1,25 @@
+# Use an arm64 Ubuntu 20.04 base image with ROS Noetic
+FROM arm64v8/ros:noetic-ros-base
+
+# 1. Install MAVROS package
+# The 'ros-noetic-mavros-extras' package includes useful plugins
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-mavros \
+    ros-noetic-mavros-extras \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Install GeographicLib datasets
+RUN /opt/ros/noetic/lib/mavros/install_geographiclib_datasets.sh
+
+# 3. Copy our custom entrypoint script into the container
+COPY entrypoint.sh /ros_entrypoint.sh
+
+# 4. Make the script executable
+RUN chmod +x /ros_entrypoint.sh
+
+# 5. Set the entrypoint to our custom script
+ENTRYPOINT ["/ros_entrypoint.sh"]
+
+# 6. Set the default command that the entrypoint will run
+# This can be overridden in the 'docker run' command
+CMD ["roslaunch", "mavros", "apm.launch"]
