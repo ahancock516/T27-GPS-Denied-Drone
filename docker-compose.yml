@@ -127,12 +127,14 @@ services:
     network_mode: host
     volumes:
       - /home/group7/ros_bags:/root/ros_bags
+      - ./mavros_ws/launch/apm_pluginlists.yaml:/opt/ros/noetic/share/mavros/launch/apm_pluginlists.yaml:ro
     devices:
-    #   - "/dev/ttyACM0:/dev/ttyACM0" #RPI Serial USB
+    # - "/dev/ttyACM0:/dev/ttyACM0" #RPI Serial USB
       - "/dev/ttyAMA10:/dev/ttyAMA10" #RPI Serial GPIO Dedicated
     # command: ["roslaunch", "mavros", "apm.launch", "fcu_url:=/dev/ttyACM0:115200"] #RPI Serial USB
     command: >
       bash -c "
+      source ~/catkin_ws/devel/setup.bash &&
       rosparam set /mavros/plugin_whitelist \"['*']\" &&
       roslaunch mavros apm.launch fcu_url:=/dev/ttyAMA10:921600
       "
@@ -187,8 +189,7 @@ services:
       - mavros
     restart: unless-stopped
     devices: 
-      - /dev/gpiochip4:/dev/gpiochip4 
-    #  - /dev/gpiomem:/dev/gpiomem
+      - /dev/gpiochip0:/dev/gpiochip0
     environment:
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
