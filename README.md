@@ -41,22 +41,32 @@ The system is built on a custom quadcopter frame.
 4.  **Compute Limits:** The Raspberry Pi 5 cannot run ORB-SLAM3 smoothly in real-time alongside ROS overhead. VINS-Fusion was much more efficient for this architecture.
 
 ## 3D Printed Parts & Files
+<img width="1920" height="1080" alt="drone_render" src="https://github.com/user-attachments/assets/6316caf9-ed12-422c-a506-5a72a74fb92b" />
 --Link to 3D Print Repository--
+
+## System Payload
+![Drone Payload](https://github.com/user-attachments/assets/41458662-f246-4f83-a422-26ed67716800)
 
 ## System Wiring Diagram
 ![4-H743_60AESCStackConnectivityDiagram](https://github.com/user-attachments/assets/34ae5887-13ba-4162-abba-5c8f6e4e9b3c)
 *https://aeroselfie.myshopify.com/products/aero-selfie-h743-flight-controller-stack-30x30-stack-with-60a-4in1-esc*
 
+## System Control
+<img width="576" height="385" alt="image (16)" src="https://github.com/user-attachments/assets/cf254d8a-e666-407e-a83c-c9cb223d8ad5" />
+<img width="560" height="407" alt="image (15)" src="https://github.com/user-attachments/assets/bbe49cf9-fa1f-43c1-b4b1-3b1bbae7bcb2" />
+https://cdn.shopify.com/s/files/1/0609/8324/7079/files/Pocket_1.pdf
+
 ## 🛠️ Installation & Setup
 
 
-
-## Ardupilot Parameters
+<details>
+<summary><b>🔻 Click here to view the Ardupilot Parameters</b></summary> 
 # Onboard parameters for Vehicle 1
  Stack: ArduPilot
  Vehicle: Quadrotor
  Version: 4.6.3 beta
  Git Revision: 3fc7011a
+
 ```
 # Vehicle-Id Component-Id Name Value Type
 1	1	ACRO_BAL_PITCH	1.000000000000000000	9
@@ -1326,3 +1336,5 @@ The system is built on a custom quadcopter frame.
 1	1	WVANE_ENABLE	0	2
 1	1	ZIGZ_AUTO_ENABLE	0	2
 ```
+ </summary>
+</details>
