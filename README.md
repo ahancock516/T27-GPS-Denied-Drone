@@ -53,12 +53,11 @@ The system is built on a custom quadcopter frame.
 
 ## Ardupilot Parameters
 # Onboard parameters for Vehicle 1
-#
-# Stack: ArduPilot
-# Vehicle: Quadrotor
-# Version: 4.6.3 beta
-# Git Revision: 3fc7011a
-#
+ Stack: ArduPilot
+ Vehicle: Quadrotor
+ Version: 4.6.3 beta
+ Git Revision: 3fc7011a
+```
 # Vehicle-Id Component-Id Name Value Type
 1	1	ACRO_BAL_PITCH	1.000000000000000000	9
 1	1	ACRO_BAL_ROLL	1.000000000000000000	9
@@ -1326,4 +1325,4 @@ The system is built on a custom quadcopter frame.
 1	1	WP_YAW_BEHAVIOR	2	2
 1	1	WVANE_ENABLE	0	2
 1	1	ZIGZ_AUTO_ENABLE	0	2
-
+```
