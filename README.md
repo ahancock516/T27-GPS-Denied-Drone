@@ -44,6 +44,16 @@ The system is built on a custom quadcopter frame.
 <img width="1920" height="1080" alt="drone_render" src="https://github.com/user-attachments/assets/6316caf9-ed12-422c-a506-5a72a74fb92b" />
 --Link to 3D Print Repository--
 
+| Part Name | Qty | Description | Material |
+| :--- | :--- | :--- | :--- |
+| [`ai_drone_arm.stl`](3D_Print/ai_drone_arm.stl) | 4 | Motor arms | PLA |
+| [`ai_drone_bottom_chassis.stl`](3D_Print/ai_drone_bottom_chassis.stl) | 1 | Chassis Bottom | PLA |
+| [`ai_drone_camera_hinge_back.stl`](3D_Print/ai_drone_camera_hinge_back.stl) | 1 | Camera Base Mount | TPU |
+| [`ai_drone_camera_hinge_front.stl`](3D_Print/ai_drone_camera_hinge_front.stl) | 1 | Camera Mount | TPU |
+| [`ai_drone_top_chassis.stl`](3D_Print/ai_drone_top_chassis.stl) | 1 | Chassis Top | PLA |
+| [`ai_drone_under_plate.stl`](3D_Print/ai_drone_under_plate.stl) | 1 | Chassis Under Plate | PLA |
+*note all are printed at 30% gyroid infill.
+
 ## System Payload
 ![Drone Payload](https://github.com/user-attachments/assets/41458662-f246-4f83-a422-26ed67716800)
 
