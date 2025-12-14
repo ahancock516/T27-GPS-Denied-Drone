@@ -33,6 +33,8 @@ The system is built on a custom quadcopter frame.
 | **Optical Flow** | Mico Air MTF-02P | For velocity estimation assistance |
 | **GPS/Compass** | HGLRC M100 Pro | Used for Ground Truth comparison |
 | **ESC** | 60A 4-in-1 | 2S-6S LiPo rated |
+| **Telemetry** | ELRS Receiver | Radio Control & Telemetry Data |
+| **Radio** | Radiomaster Pocket | Radio Control |
 
 ## ⚠️ Critical Lessons Learned (Read Before Building)
 1.  **IMU Frequency is King:** VINS-Fusion **requires** a minimum 200Hz IMU update rate. Anything lower (50Hz) caused immediate drift and failure in our tests.
@@ -61,16 +63,141 @@ The system is built on a custom quadcopter frame.
 ![4-H743_60AESCStackConnectivityDiagram](https://github.com/user-attachments/assets/34ae5887-13ba-4162-abba-5c8f6e4e9b3c)
 *https://aeroselfie.myshopify.com/products/aero-selfie-h743-flight-controller-stack-30x30-stack-with-60a-4in1-esc*
 
+> ⚠️ **Important:** Ensure the Motors are mapped to the correct ESC Channels.
+https://ardupilot.org/copter/docs/initial-setup.html
+
 ## System Control
 <img width="576" height="385" alt="image (16)" src="https://github.com/user-attachments/assets/cf254d8a-e666-407e-a83c-c9cb223d8ad5" />
 <img width="560" height="407" alt="image (15)" src="https://github.com/user-attachments/assets/bbe49cf9-fa1f-43c1-b4b1-3b1bbae7bcb2" />
 https://cdn.shopify.com/s/files/1/0609/8324/7079/files/Pocket_1.pdf
 
 ## 🛠️ Installation & Setup
+<details>
+<summary><b>🔻 Installing Docker on Raspberry Pi 5</b></summary> 
 
+### Prerequisites
+
+1. Update your system:
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+2. Install Docker using the official convenience script:
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+```
+
+3. Add your user to the docker group (to run Docker without sudo):
+```bash
+sudo usermod -aG docker $USER
+```
+
+4. Log out and back in for the group changes to take effect, then verify the installation:
+```bash
+docker --version
+docker run hello-world
+```
+
+### Installing the Repository
+
+1. Clone the repository:
+```bash
+git clone https://github.com/ahancock516/T27-GPS-Denied-Drone.git
+cd T27-GPS-Denied-Drone
+```
+
+2. Build and run with Docker Compose:
+```bash
+docker compose up --build
+```
+
+For development mode with live code reloading:
+```bash
+docker compose up --build --watch
+```
+
+3. To stop the containers:
+```bash
+docker compose down
+```
+</details>
 
 <details>
-<summary><b>🔻 Click here to view the Ardupilot Parameters</b></summary> 
+<summary><b>🔻 Sensor Calibration</b></summary>
+
+Accurate state estimation requires precise calibration of the camera intrinsics and the camera-IMU extrinsics.
+
+> ⚠️ **Important:** Kalibr cannot be installed on Raspberry Pi 5 and must be run on a separate computer (Linux or Mac recommended).
+
+**Tools Used:**
+
+a. [Kalibr](https://github.com/ethz-asl/kalibr)<br>
+b. [Allan Variance ROS](https://github.com/ori-drs/allan_variance_ros)<br>
+c. [AprilGrid 6x6 0.8m](https://github.com/ethz-asl/kalibr/wiki/downloads)<br>
+
+## Calibration Process: 
+Inputs: camera topic
+Outputs: camera_calibration_data.bag in the directory the command was initiated.
+
+Launch the image viewer for your camera.
+```
+rosrun image_view image_view image:=/mono_camera/image_raw
+```
+```
+rosrun image_view image_view image:=/mono_camera/image_raw
+```
+The AprilGrid must remain stationary <br>
+
+```
+rosbag record -O calibration_data.bag /mono_camera/image_raw /mavros/imu/data_raw
+```
+Rotate and move the AprilGrid around the camera while keeping the AprilGrid within the frame of the camera. <br>
+
+This generates a camera_calibration_data.bag file.
+
+## Camera Calibration
+With the resulting camera_calibration_data.bag, run the camera calibration with Kalibr. <br>
+
+input: camera_calibration_data.bag
+```
+rosrun kalibr kalibr_calibrate_cameras --target target.yaml --bag camera_calibration_data.bag --models pinhole-radtan --topics /camera/image_raw
+```
+output: camchain.yaml
+
+#### Camera + IMU Calibration
+Create and configure the imu.yaml from the Allan Variance parameters obtained in the previous steps.
+
+```
+**put example imu.yaml file contents/parameters here***
+```
+
+Record a new bag file exciting all IMU axes while keeping the target in view. <br>
+
+Rotate and move the camera while keeping the AprilGrid stationary. <br>
+
+Launch the image viewer for your camera.
+```
+rosrun image_view image_view image:=/mono_camera/image_raw
+```
+Initiate the rosbag recording and begin rotating the camera while keeping the AprilGrid stationary and in the image frame.
+```
+rosbag record -O camera_imu_calibration_data.bag /mono_camera/image_raw /mavros/imu/data_raw
+```
+Run kalibr calibrate command with the newly collected bag.
+```
+rosrun kalibr kalibr_calibrate_imu_camera --target target.yaml --cam camchain.yaml --imu imu.yaml --bag data.bag --time-calibration
+```
+
+Output: See config/calibration_results.yaml for the resulting matrices used in the SLAM nodes.
+
+> ⚠️ **Important:** This calibration_results.yaml is used to generate the VINS-Fusion and ORB-SLAM3 camera+imu configuration files.
+
+
+</details>
+
+<details>
+<summary><b>🔻 Ardupilot Parameters</b> </summary>
 # Onboard parameters for Vehicle 1
  Stack: ArduPilot
  Vehicle: Quadrotor
@@ -1346,5 +1473,4 @@ https://cdn.shopify.com/s/files/1/0609/8324/7079/files/Pocket_1.pdf
 1	1	WVANE_ENABLE	0	2
 1	1	ZIGZ_AUTO_ENABLE	0	2
 ```
- </summary>
 </details>
