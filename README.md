@@ -158,15 +158,20 @@ cd T27-GPS-Denied-Drone
 docker compose up --build
 ```
 
-For development mode with live code reloading:
+For Launching Specific Containers
 ```bash
-docker compose up --build --watch
+make vinsfusion #camera_mono, mavros, roscore, etc..
 ```
 
 3. To stop the containers:
 ```bash
 docker compose down
 ```
+or
+```bash
+make clean
+```
+
 </details>
 
 <details>
