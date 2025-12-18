@@ -171,12 +171,14 @@ or
 ```bash
 make clean
 ```
+>⚠️ The Raspberry Pi 5 has limited resources, so it may be necessary to 'make build service-name' individually for each service.
 
 </details>
 
 <details>
 <summary><b>🔻Sensor Calibration - (>3Hr)</b></summary>
 
+## Camera Calibration
 Accurate state estimation requires precise calibration of the camera intrinsics and the camera-IMU extrinsics.
 
 > ⚠️ **Important:** Kalibr cannot be installed on Raspberry Pi 5 and must be run on a separate computer (Linux or Mac recommended).
@@ -187,62 +189,153 @@ a. [Kalibr](https://github.com/ethz-asl/kalibr)<br>
 b. [Allan Variance ROS](https://github.com/ori-drs/allan_variance_ros)<br>
 c. [AprilGrid 6x6 0.8m](https://github.com/ethz-asl/kalibr/wiki/downloads)<br>
 
-## Calibration Process: 
-Inputs: camera topic
-Outputs: camera_calibration_data.bag in the directory the command was initiated.
+## Prerequisites
+- Flight Controller with IMU properly connected
+- Camera publishing to ROS topic
+- AprilGrid calibration target
+- External drive for data storage
+- Kalibr installed on a laptop/desktop
 
-Launch the image viewer for your camera.
+## Step 1: Allan Variance Collection (IMU Calibration)
+
+### 1.1 Verify IMU Data Stream
+Before recording, confirm your IMU meets the following requirements:
+- IMU publishing rate: **minimum 200Hz**
+- Topic `/mavros/imu/data_raw` is publishing valid data
+
+You can verify this with:
+```bash
+rostopic hz /mavros/imu/data_raw
+rostopic echo /mavros/imu/data_raw
 ```
+
+### 1.2 Record Static IMU Data
+**⚠️ CRITICAL: The Flight Controller must remain completely stationary for the entire 3-hour recording period.**
+
+Use the `ros_tools` container (or any container with ROS environment and rosbag functionality):
+```bash
+rosbag record -O allan_variance_data.bag --duration=10800 /mavros/imu/data_raw
+```
+
+This will record for 3 hours (10,800 seconds). Once complete, copy the bag file to an external drive for processing on your laptop.
+
+### 1.3 Generate Allan Variance Parameters
+On your laptop with Kalibr installed, process the bag file to extract Allan Variance parameters:
+```bash
+rosrun kalibr kalibr_allan --bag allan_variance_data.bag --axis-yz
+```
+
+**Output:** Allan variance plots and parameters needed for `imu.yaml`
+
+### 1.4 Create imu.yaml Configuration
+Create `imu.yaml` using the Allan Variance parameters obtained above:
+```yaml
+#Accelerometers
+accelerometer_noise_density: 1.86e-03   # [m/s^2/sqrt(Hz)]
+accelerometer_random_walk: 4.33e-04     # [m/s^3/sqrt(Hz)]
+
+#Gyroscopes
+gyroscope_noise_density: 1.87e-04       # [rad/s/sqrt(Hz)]
+gyroscope_random_walk: 2.66e-05         # [rad/s^2/sqrt(Hz)]
+
+rostopic: /mavros/imu/data_raw
+update_rate: 200.0                       # Hz
+```
+
+---
+
+## Step 2: Camera Calibration
+
+### 2.1 Record Camera Calibration Data
+**Setup:** Keep the AprilGrid **stationary** throughout this recording.
+
+Launch the image viewer to monitor your camera feed:
+```bash
 rosrun image_view image_view image:=/mono_camera/image_raw
 ```
+
+Start recording:
+```bash
+rosbag record -O camera_calibration_data.bag /mono_camera/image_raw
 ```
+
+**Procedure:** Move and rotate the **camera** around the stationary AprilGrid, ensuring the target remains visible in the frame at all times. Capture various angles, distances, and orientations.
+
+### 2.2 Run Camera Calibration
+```bash
+rosrun kalibr kalibr_calibrate_cameras \
+  --target target.yaml \
+  --bag camera_calibration_data.bag \
+  --models pinhole-radtan \
+  --topics /mono_camera/image_raw
+```
+
+**Output:** `camchain.yaml` (camera intrinsics and distortion parameters)
+
+---
+
+## Step 3: Camera-IMU Calibration
+
+### 3.1 Record Camera-IMU Calibration Data
+**Setup:** Keep the AprilGrid **stationary** throughout this recording.
+
+Launch the image viewer:
+```bash
 rosrun image_view image_view image:=/mono_camera/image_raw
 ```
-The AprilGrid must remain stationary <br>
 
-```
-rosbag record -O calibration_data.bag /mono_camera/image_raw /mavros/imu/data_raw
-```
-Rotate and move the AprilGrid around the camera while keeping the AprilGrid within the frame of the camera. <br>
-
-This generates a camera_calibration_data.bag file.
-
-## Camera Calibration
-With the resulting camera_calibration_data.bag, run the camera calibration with Kalibr. <br>
-
-input: camera_calibration_data.bag
-```
-rosrun kalibr kalibr_calibrate_cameras --target target.yaml --bag camera_calibration_data.bag --models pinhole-radtan --topics /camera/image_raw
-```
-output: camchain.yaml
-
-#### Camera + IMU Calibration
-Create and configure the imu.yaml from the Allan Variance parameters obtained in the previous steps.
-
-```
-**put example imu.yaml file contents/parameters here***
-```
-
-Record a new bag file exciting all IMU axes while keeping the target in view. <br>
-
-Rotate and move the camera while keeping the AprilGrid stationary. <br>
-
-Launch the image viewer for your camera.
-```
-rosrun image_view image_view image:=/mono_camera/image_raw
-```
-Initiate the rosbag recording and begin rotating the camera while keeping the AprilGrid stationary and in the image frame.
-```
+Start recording:
+```bash
 rosbag record -O camera_imu_calibration_data.bag /mono_camera/image_raw /mavros/imu/data_raw
 ```
-Run kalibr calibrate command with the newly collected bag.
-```
-rosrun kalibr kalibr_calibrate_imu_camera --target target.yaml --cam camchain.yaml --imu imu.yaml --bag data.bag --time-calibration
+
+**Procedure:** Rotate and move the **camera** (and IMU) while keeping the AprilGrid stationary and in view. Excite all IMU axes (pitch, roll, yaw, and translation in all directions) to capture the spatial and temporal relationship between camera and IMU.
+
+### 3.2 Run Camera-IMU Calibration
+```bash
+rosrun kalibr kalibr_calibrate_imu_camera \
+  --target target.yaml \
+  --cam camchain.yaml \
+  --imu imu.yaml \
+  --bag camera_imu_calibration_data.bag \
+  --time-calibration
 ```
 
-Output: See config/calibration_results.yaml for the resulting matrices used in the SLAM nodes.
+**Output:** `camchain-imucam.yaml` containing:
+- Camera intrinsics and distortion coefficients
+- IMU noise characteristics
+- Camera-IMU extrinsic transformation (rotation and translation)
+- Time offset between camera and IMU
 
-> ⚠️ **Important:** This calibration_results.yaml is used to generate the VINS-Fusion and ORB-SLAM3 camera+imu configuration files.
+---
+
+## Step 4: Generate SLAM Configuration Files
+
+The calibration results from `camchain-imucam.yaml` are used to generate configuration files for VINS-Fusion and ORB-SLAM3.
+
+> ⚠️ **Important:** See `config/calibration_results.yaml` for example formatting of the resulting matrices used in the SLAM nodes.
+
+**Key Parameters for SLAM Configuration:**
+- Camera intrinsics (fx, fy, cx, cy)
+- Distortion coefficients (k1, k2, p1, p2)
+- Camera-IMU extrinsic rotation and translation
+- IMU noise parameters
+
+Refer to your SLAM framework's documentation for specific configuration file format requirements.
+
+### Example Configuration Files
+
+Reference these example configurations based on your calibration results:
+
+**VINS-Fusion:**
+- [`vinsfusion_ws/config/camera_config.yaml`](vinsfusion_ws/config/camera_config.yaml) - Camera parameters for VINS_Fusion
+- [`vinsfusion_ws/config/vins_mono_imu_config.yaml`](vinsfusion_ws/config/vins_mono_imu_config.yaml) - Complete VINS-Fusion configuration
+
+**ORB-SLAM3:**
+- [`orbslam3_ws/config/pi_camera_inertial.yaml`](orbslam3_ws/config/pi_camera_inertial.yaml) - Camera-IMU configuration for ORB-SLAM3
+
+> 💡 **Note:** These are example files. You must update them with your own calibration results from Kalibr.
+
 
 </details>
 
