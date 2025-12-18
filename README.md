@@ -203,6 +203,8 @@ Before recording, confirm your IMU meets the following requirements:
 - IMU publishing rate: **minimum 200Hz**
 - Topic `/mavros/imu/data_raw` is publishing valid data
 
+>Refer to setting up the publishing rate for Mavlink Parameters in XX Section (Link Here).
+
 You can verify this with:
 ```bash
 rostopic hz /mavros/imu/data_raw
