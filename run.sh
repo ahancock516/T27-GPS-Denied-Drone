@@ -10,4 +10,4 @@ echo "Starting Docker for user: $REAL_USER at $REAL_HOME"
 
 # Run docker-compose passing the variables inline
 # This OVERRIDES any .env file settings
-USER=$REAL_USER HOME=$REAL_HOME DISPLAY=$DISPLAY docker-compose up "$@" -d
+USER=$REAL_USER HOME=$REAL_HOME DISPLAY=$DISPLAY docker compose up "$@" -d
