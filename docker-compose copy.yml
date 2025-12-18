@@ -15,13 +15,12 @@ services:
       dockerfile: camera_ws/Dockerfile
     container_name: camera
     image: arm64v8/ros:noetic-ros-base
-    privileged: true
     command: >
       bash -c "sleep 3 &&
       source /opt/ros/noetic/setup.bash &&
       roslaunch usb_cam camera.launch"
     devices:
-      - "/dev/video0:/dev/video0"
+      - "/dev/video0:/dev/video0" # IMPORTANT: Make sure this device is correct
     depends_on:
       - roscore
     network_mode: host
@@ -35,19 +34,22 @@ services:
   camera_stereo:
     build:
       context: .
-      dockerfile: camera_stereo_ws/Dockerfile
+      dockerfile: camera_stereo_ws/Dockerfile # Points to the new Dockerfile
     container_name: camera_stereo
     network_mode: host
     privileged: true
     restart: unless-stopped
+    # Use the correct package name and launch file
     command: bash -c "sleep 3 && roslaunch /etc/ros/stereo_bringup.launch"
     depends_on:
       - roscore
     environment:
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
+    # Mount your local config directory into the container
     volumes:
       - ./camera_stereo_ws/config:/root/calib
+    # Add device access for cameras
     devices:
       - "/dev/video0:/dev/video0"
       - "/dev/video1:/dev/video1"
@@ -55,10 +57,11 @@ services:
   camera_mono:
     build:
       context: ./camera_mono_ws
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile # Points to the new Dockerfile
     container_name: camera_mono
     network_mode: host
     privileged: true
+    # Use the correct package name and launch file
     command: bash -c "sleep 3 && roslaunch /etc/ros/camera_bringup.launch"
     depends_on:
       - roscore
@@ -66,8 +69,10 @@ services:
     environment:
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
+    # Mount your local config directory into the container
     volumes:
       - ./camera_mono_ws/config:/root/calib
+    # Add device access for cameras
     devices:
       - "/dev/video0:/dev/video0"
 
@@ -78,6 +83,7 @@ services:
     depends_on:
       - roscore
     network_mode: host
+    #command: bash -c "sleep 3 && roslaunch /launches/icm20948.launch"
     restart: unless-stopped
     environment:
       - ROS_MASTER_URI=http://127.0.0.1:11311
@@ -94,22 +100,24 @@ services:
       context: ./mavros_ws
       dockerfile: Dockerfile
     container_name: mavros
-    privileged: true
     depends_on:
       - roscore
     network_mode: host
     volumes:
-      # SHARED FOLDER: Writes to local ~/ros_bags
-      - ${HOME}/ros_bags:/root/ros_bags
+      - /home/group7/ros_bags:/root/ros_bags
       - ./mavros_ws/launch/apm_config.yaml:/opt/ros/noetic/share/mavros/launch/apm_config.yaml:ro
     devices:
-      - "/dev/ttyAMA10:/dev/ttyAMA10"
+    # - "/dev/ttyACM0:/dev/ttyACM0" #RPI Serial USB
+      - "/dev/ttyAMA10:/dev/ttyAMA10" #RPI Serial GPIO Dedicated
+    # command: ["roslaunch", "mavros", "apm.launch", "fcu_url:=/dev/ttyACM0:115200"] #RPI Serial USB
     command: >
       bash -c "
       sleep 5.0 &&
       source ~/catkin_ws/devel/setup.bash &&
       roslaunch mavros apm.launch fcu_url:=/dev/ttyAMA10:921600
       "
+    
+    #command: ["roslaunch", "mavros", "apm.launch", "fcu_url:=/dev/ttyAMA10:921600"]
     restart: unless-stopped
     environment:
       - ROS_MASTER_URI=http://127.0.0.1:11311
@@ -120,7 +128,6 @@ services:
       context: ./orbslam3_ws
     container_name: orbslam3
     network_mode: host
-    privileged: true
     command: >
       bash -c "sleep 3 &&
       rosrun ORB_SLAM3 Mono
@@ -134,16 +141,11 @@ services:
     environment:
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
-      - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
-      - XAUTHORITY=/root/.Xauthority
     volumes:
-      # SHARED FOLDER: Writes to local ~/ros_bags
-      - ${HOME}/ros_bags:/root/ros_bags
       - ./orbslam3_ws/config:/root/orbslam3_config
       - ./orbslam3_ws/launch:/root/orbslam3_launch
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ~/.Xauthority:/root/.Xauthority:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix
 
   vinsfusion:
     build:
@@ -171,17 +173,15 @@ services:
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
       - DISPLAY=${DISPLAY}
-      - QT_X11_NO_MITSHM=1
-      - XAUTHORITY=/root/.Xauthority
+      - QT_X11_NO_MITSHM=1  # Often helps with stability in Docker
+      - XAUTHORITY=/root/.Xauthority # Add this line
     volumes:
       - ./vinsfusion_ws/config:/root/catkin_ws/src/VINS-Fusion/config
       - ./vinsfusion_ws/launch:/root/vins_launch
       - ./vinsfusion_output:/root/output:rw
-      # SHARED FOLDER: Reads from local ~/ros_bags
-      # Mapped to /root/rosbags to match VINS scripts
-      - ${HOME}/ros_bags:/root/rosbags
+      - /media/group7/Lexar/ros_bags:/root/rosbags
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ~/.Xauthority:/root/.Xauthority:rw
+      - ~/.Xauthority:/root/.Xauthority:rw # Add this line
 
   imu_analyzer:
     build:
@@ -190,14 +190,17 @@ services:
     container_name: imu_analyzer
     depends_on:
       - roscore
-      - mavros
+      - mavros  # Depends on mavros to ensure the IMU topic is available
     network_mode: host
+    #command: >
+    #  bash -c "chmod +x /scripts/run_allan_variance.sh && 
+    #  /scripts/run_allan_variance.sh"
     restart: unless-stopped
     environment:
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
       - IMU_TOPIC=/mavros/imu/data_raw
-      - DURATION=10800
+      - DURATION=60
     volumes:
       - ./allan_variance_ros_ws/config:/config
       - ./allan_variance_ros_ws/imu_results:/data
@@ -210,23 +213,21 @@ services:
     container_name: ros_tools
     depends_on:
       - roscore
-      - mavros
-      - camera_mono
+      - mavros #for IMU Topics
+      - camera_mono #for Camera Topics
     network_mode: host
-    image: ros-tools
-    privileged: true
+    image: ros-tools # Give the built image a name
     restart: unless-stopped
     environment:
       - DISPLAY=${DISPLAY}
-      - QT_X11_NO_MITSHM=1
+      - QT_X11_NO_MITSHM=1 # Often helps with stability for Qt apps like RQT
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
-      - XAUTHORITY=/root/.Xauthority
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ~/.Xauthority:/root/.Xauthority:rw
-      # SHARED FOLDER: Reads from local ~/ros_bags
-      - ${HOME}/ros_bags:/root/rosbags
+      - ~/.Xauthority:/root/.Xauthority:rw # Add this line
+      - /media/group7/Lexar/ros_bags:/root/rosbags
       - ./ros_tools_ws/scripts:/scripts
-    stdin_open: true
-    tty: true
+    #Keep container running for exec ---
+    stdin_open: true  # Equivalent to -i
+    tty: true         # Equivalent to -t

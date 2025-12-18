@@ -72,8 +72,51 @@ https://ardupilot.org/copter/docs/initial-setup.html
 https://cdn.shopify.com/s/files/1/0609/8324/7079/files/Pocket_1.pdf
 
 ## 🛠️ Installation & Setup
+
 <details>
-<summary><b>🔻 Installing Docker on Raspberry Pi 5</b></summary> 
+<summary><b>🔻Installing Debian GNU/Linux 12 (Bookworm) - (15 min)
+</b></summary>
+
+## 🍓 Tutorial: Installing "Legacy" Bookworm OS on Raspberry Pi 5
+
+This guide covers how to install the **Legacy** version of Raspberry Pi OS (Bookworm). 
+
+> [!NOTE]
+> **Why use Legacy?** 
+> The standard RPi OS uses **Wayland**, which breaks compatibility with some remote desktop tools (like RealVNC), screen recording software, and Python GUI automation libraries (like `pyautogui`). The **Legacy** version maintains the classic **X11** window system while keeping the core OS up to date.
+
+### Prerequisites
+*   **Hardware:** Raspberry Pi 5
+*   **Storage:** 128GB (or larger) microSD card
+*   **Software:** [Raspberry Pi Imager](https://www.raspberrypi.com/software/) installed on your PC/Mac
+
+### Installation Steps
+
+1.  **Launch Raspberry Pi Imager** on your computer.
+2.  **Select Device:**
+    *   Click `CHOOSE DEVICE` → Select **Raspberry Pi 5**.
+3.  **Select OS:**
+    *   Click `CHOOSE OS`.
+    *   Select **Raspberry Pi OS (other)**.
+    *   Select **Raspberry Pi OS (Legacy, 64-bit)**.
+    *   *⚠️ Verify the description says "A port of Debian Bookworm" (ensure you do not select the older Bullseye version).*
+4.  **Select Storage:**
+    *   Click `CHOOSE STORAGE` → Select your **128GB SD Card**.
+5.  **Configure Settings (Recommended):**
+    *   Click `NEXT`.
+    *   When prompted to apply OS customisation, click **EDIT SETTINGS**.
+    *   **General:** Set your `hostname`, `username`, `password`, and `Wi-Fi` credentials.
+    *   **Services:** Enable **SSH** (password authentication) if you need headless access.
+6.  **Write:**
+    *   Click `SAVE` → `YES` → `YES`.
+    *   *Wait for verification to complete.*
+
+---
+*Verified for Raspberry Pi 5 as of 2025.*
+</details>
+
+<details>
+<summary><b>🔻Installing Docker on Raspberry Pi 5 - (3 min)</b></summary> 
 
 ### Prerequisites
 
@@ -99,7 +142,10 @@ docker --version
 docker run hello-world
 ```
 
-### Installing the Repository
+</details>
+
+<details>
+<summary><b>🔻Installing the Repository - (1 Hr)</b></summary>
 
 1. Clone the repository:
 ```bash
@@ -124,7 +170,7 @@ docker compose down
 </details>
 
 <details>
-<summary><b>🔻 Sensor Calibration</b></summary>
+<summary><b>🔻Sensor Calibration - (>3Hr)</b></summary>
 
 Accurate state estimation requires precise calibration of the camera intrinsics and the camera-IMU extrinsics.
 
@@ -193,11 +239,10 @@ Output: See config/calibration_results.yaml for the resulting matrices used in t
 
 > ⚠️ **Important:** This calibration_results.yaml is used to generate the VINS-Fusion and ORB-SLAM3 camera+imu configuration files.
 
-
 </details>
 
 <details>
-<summary><b>🔻 Ardupilot Parameters</b> </summary>
+<summary><b>🔻Ardupilot Parameters</b> </summary>
 # Onboard parameters for Vehicle 1
  Stack: ArduPilot
  Vehicle: Quadrotor

@@ -45,9 +45,11 @@ RUN cd ${CATKIN_WS}/src && \
     git clone https://github.com/ori-drs/allan_variance_ros.git
 
 # Install ROS dependencies
-RUN cd ${CATKIN_WS} && \
+RUN apt-get update && \
+    cd ${CATKIN_WS} && \
     . /opt/ros/noetic/setup.sh && \
-    rosdep install --from-paths src --ignore-src -r -y
+    rosdep install --from-paths src --ignore-src -r -y && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN cd ${CATKIN_WS} && \
     rm -rf build devel .catkin_workspace && \
