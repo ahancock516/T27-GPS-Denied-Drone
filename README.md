@@ -210,7 +210,7 @@ Before recording, confirm your IMU meets the following requirements:
 - Topic `/mavros/imu/data_raw` is publishing valid data
 
 > Refer to setting up the publishing rate for Mavlink 
-> Refer to setting up the publishing rate for Mavlink Parameters in the [ArduPilot Configuration](#-ardupilot---mavlink-configuration) section.
+> Refer to setting up the publishing rate for Mavlink Parameters in the [ArduPilot Configuration](#ardupilot-mavlink-configuration) section.
 
 You can verify this with:
 ```bash
