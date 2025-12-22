@@ -349,8 +349,9 @@ sudo systemctl daemon-reload
 sudo systemctl enable vins_startup.service
 sudo systemctl start vins_startup.service
 ```
+>Reference the Radiomaster Radio Diagram
 
-The VINS-Fusion container is currently configured to launch a startup python script that listens for a radio input through the /mavros/rc/out channel data. When the upper-right momentary bumper of the Radiomaster Pocket is depressed, the script sends a pwm output to GPIO 24 (pin 18) of the raspberry pi 5. This output pin is used to drive the base of an NPN PN2222A transistor which drives an active buzzer. 
+The VINS-Fusion container is currently configured to launch a startup python script that listens for a radio input through the /mavros/rc/out channel data. When the upper-right (SD) momentary bumper of the Radiomaster Pocket is depressed, the script sends a pwm output to GPIO 24 (pin 18) of the raspberry pi 5. This output pin is used to drive the base of an NPN PN2222A transistor which drives an active buzzer. 
 
 ####  Active Buzzer Wiring
 ![alt text](<Active Buzzer Diagram.png>)
