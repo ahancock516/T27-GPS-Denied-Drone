@@ -188,12 +188,7 @@ Because the Raspberry Pi 5 lacks the compute power to run the Kalibr optimizatio
 ### 🎥 Phase A: Data Collection
 *Complete these steps to generate the raw data needed for calibration.*
 
-#### 1.1 Verify IMU Data Stream
-Before recording, confirm your IMU meets the following requirements:
-- IMU publishing rate: **minimum 200Hz**
-- Topic `/mavros/imu/data_raw` is publishing valid data
 **Tools Used:**
-
 a. [Kalibr](https://github.com/ethz-asl/kalibr)<br>
 b. [Allan Variance ROS](https://github.com/ori-drs/allan_variance_ros)<br>
 c. [AprilGrid 6x6 0.8m](https://github.com/ethz-asl/kalibr/wiki/downloads)<br>
@@ -213,7 +208,7 @@ Before recording, confirm your IMU meets the following requirements:
 - Topic `/mavros/imu/data_raw` is publishing valid data
 
 > Refer to setting up the publishing rate for Mavlink 
-> Refer to setting up the publishing rate for Mavlink Parameters in the [ArduPilot Configuration](#-ardupilot-configuration) section.
+> Refer to setting up the publishing rate for Mavlink Parameters in the [ArduPilot Configuration](#-ardupilot-&-mavlink-configuration) section.
 
 You can verify this with:
 ```bash
@@ -265,7 +260,7 @@ Copy your imu_static.bag and calibration_data.bag from the Raspberry Pi to your 
 2. Enter the Calibration Environment
 We have created a dedicated repository containing the Dockerized Kalibr suite and conversion scripts to transform raw calibration data into VINS-Fusion/ORB-SLAM3 configuration files.
 
-➜['Open the T27 Calibration Toolkit Repository'](https://github.dev/ahancock516/kalibr_slam_converter)
+➜['Open the kalibr_slam_converter Repository'](https://github.com/ahancock516/kalibr_slam_converter)
 
 3. Execution Summary (Inside the Toolkit)
 Inside the linked repository, you will perform the following:
