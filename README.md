@@ -288,3 +288,32 @@ Reference these example configurations based on your calibration results:
 > 💡 **Note:** These are example files. You must update them with your own calibration results from Kalibr.
 
 </details>
+
+<details>
+<summary><b>🔻ArduPilot & MAVLink Configuration - (10 min)</b></summary>
+
+## Configuring the Flight Controller to Raspberry Pi 5 Data Bridge
+
+We have provided a Vehicle_Params.params file that capture all of the settings used during our Mills-Pond-Park autonomous flight tests
+
+1. Open QGroundControl
+2. Navigate to Vehicle Configuration
+3. Parameters->Tools
+4. Load the Params file
+
+#### ⚙️ Optimized VIO Data Stream
+To achieve high-fidelity state estimation, the following parameters were tuned to provide a high-frequency, low-noise data stream from the H743 to the Raspberry Pi 5.
+
+| Parameter | Value | Description |
+| :--- | :--- | :--- |
+| **`SCHED_LOOP_RATE`** | `400` | Increases FC internal processing frequency to 400Hz to minimize sensor jitter. |
+| **`SERIAL2_BAUD`** | `921` | Sets **Telem 2** to 921600 Baud for high-bandwidth MAVLink 2 communication. |
+| **`SR2_RAW_SENS`** | `200` | **200Hz Raw IMU stream** (Accel/Gyro) required for VINS-Fusion stability. |
+| **`SR2_EXTRA2`** | `200` | Matches high-rate Attitude data stream to the IMU frequency. |
+| **`INS_GYRO_FILTER`** | `20` | Low-pass filter at 20Hz to remove motor vibrations from the data stream. |
+| **`INS_ACCEL_FILTER`**| `20` | Low-pass filter at 20Hz for cleaner visual-inertial integration. |
+| **`INS_FAST_SAMPLE`** | `1` | Enables the highest internal sampling rate of the IMU chips. |
+
+
+> **Data Rate Verification:** After writing these parameters, run `rostopic hz /mavros/imu/data_raw` on the Raspberry Pi. If the rate is below 200Hz, check for serial cable interference or CPU bottlenecking on the FC.
+</details>
