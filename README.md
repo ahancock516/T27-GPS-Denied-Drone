@@ -18,7 +18,7 @@ While **ORB-SLAM3** was evaluated, our testing confirmed that **VINS-Fusion** (r
 <img width="1919" height="1079" alt="Screenshot 2025-12-02 235545" src="https://github.com/user-attachments/assets/91399a89-ad7b-4b09-92ed-ae9eae84a2cc" />
 
 <img width="606" height="392" alt="Screenshot 2025-12-07 192435" src="https://github.com/user-attachments/assets/410caec2-53f8-4ad8-b60f-1c44233a9717" />
-*Figure: VINS-Fusion estimated trajectory vs. Ground Truth GPS during outdoor testing.*
+<br>*Figure: VINS-Fusion estimated trajectory vs. Ground Truth GPS during outdoor testing.*
 
 <img width="1151" height="662" alt="GPS Guess V Actual" src="https://github.com/user-attachments/assets/88c6d45f-8bf1-4edf-91a0-8c6339e1cdee" />
 
