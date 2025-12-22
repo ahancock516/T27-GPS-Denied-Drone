@@ -189,6 +189,7 @@ Because the Raspberry Pi 5 lacks the compute power to run the Kalibr optimizatio
 *Complete these steps to generate the raw data needed for calibration.*
 
 **Tools Used:**
+
 a. [Kalibr](https://github.com/ethz-asl/kalibr)<br>
 b. [Allan Variance ROS](https://github.com/ori-drs/allan_variance_ros)<br>
 c. [AprilGrid 6x6 0.8m](https://github.com/ethz-asl/kalibr/wiki/downloads)<br>
@@ -208,7 +209,7 @@ Before recording, confirm your IMU meets the following requirements:
 - Topic `/mavros/imu/data_raw` is publishing valid data
 
 > Refer to setting up the publishing rate for Mavlink 
-> Refer to setting up the publishing rate for Mavlink Parameters in the [ArduPilot Configuration](#-ardupilot-&-mavlink-configuration) section.
+> Refer to setting up the publishing rate for Mavlink Parameters in the [ArduPilot Configuration](#-ardupilot---mavlink-configuration) section.
 
 You can verify this with:
 ```bash
@@ -368,3 +369,15 @@ The VINS-Fusion container runs a background monitor that listens to the `/mavros
 Happy Testing!
 
 </details>
+
+# 📚 Citations & References
+Algorithms & Software
+VINS-Fusion: Qin, T., Li, P., & Shen, S. (2018). VINS-Mono: A Robust and Versatile Monocular Visual-Inertial State Estimator. IEEE Transactions on Robotics. GitHub Repository
+ORB-SLAM3: Campos, C., Elvira, R., Rodríguez, J. J. G., Montiel, J. M., & Tardós, J. D. (2021). ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual–Inertial, and Multi-Map SLAM. IEEE Transactions on Robotics. GitHub Repository
+Kalibr: Furgale, P., Rehder, J., & Siegwart, R. (2013). Unified Temporal and Spatial Calibration for Multi-Sensor Systems. IEEE/RSJ International Conference on Intelligent Robots and Systems. GitHub Repository
+Flight Stack
+ArduPilot: ArduPilot Development Team. ArduCopter: An open-source multirotor flight control system. Documentation
+MAVROS: MAVLink to ROS Gateway. GitHub Repository
+
+Team 27 | GPS-Denied Navigation Project
+Special thanks to the HKUST Aerial Robotics Group for their foundational work on Visual-Inertial Odometry.
