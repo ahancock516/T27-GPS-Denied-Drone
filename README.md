@@ -81,7 +81,6 @@ https://cdn.shopify.com/s/files/1/0609/8324/7079/files/Pocket_1.pdf
 
 This guide covers how to install the **Legacy** version of Raspberry Pi OS (Bookworm). 
 
-> [!NOTE]
 > **Why use Legacy?** 
 > The standard RPi OS uses **Wayland**, which breaks compatibility with some remote desktop tools (like RealVNC), screen recording software, and Python GUI automation libraries (like `pyautogui`). The **Legacy** version maintains the classic **X11** window system while keeping the core OS up to date.
 
