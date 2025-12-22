@@ -213,7 +213,8 @@ Before recording, confirm your IMU meets the following requirements:
 - IMU publishing rate: **minimum 200Hz**
 - Topic `/mavros/imu/data_raw` is publishing valid data
 
->Refer to setting up the publishing rate for Mavlink Parameters in XX Section (Link Here).
+> Refer to setting up the publishing rate for Mavlink 
+> Refer to setting up the publishing rate for Mavlink Parameters in the [ArduPilot Configuration](#-ardupilot-configuration) section.
 
 You can verify this with:
 ```bash
@@ -316,4 +317,60 @@ To achieve high-fidelity state estimation, the following parameters were tuned t
 
 
 > **Data Rate Verification:** After writing these parameters, run `rostopic hz /mavros/imu/data_raw` on the Raspberry Pi. If the rate is below 200Hz, check for serial cable interference or CPU bottlenecking on the FC.
+</details>
+
+<details>
+<summary><b>🔻Optional Systemctl Service </b></summary>
+
+⚙️ Automation: Systemd Service
+To ensure the drone is "ready to fly" as soon as it is powered on, use the following systemd configuration to launch the Docker stack automatically.
+
+1. Create the service file:
+```bash
+sudo nano /etc/systemd/system/vins_startup.service
+```
+
+2. Paste the following configuration:
+```Ini
+[Unit]
+Description=T27 VINS-Fusion Docker Autostart
+After=docker.service network-online.target
+Requires=docker.service
+
+[Service]
+Restart=always
+User=pi
+WorkingDirectory=/home/pi/T27-GPS-Denied-Drone
+ExecStart=/usr/bin/make vinsfusion
+ExecStop=/usr/bin/docker compose down
+
+[Install]
+WantedBy=multi-user.target
+```
+3. Enable and start the service:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable vins_startup.service
+sudo systemctl start vins_startup.service
+```
+
+The VINS-Fusion container is currently configured to launch a startup python script that listens for a radio input through the /mavros/rc/out channel data. When the upper-right momentary bumper of the Radiomaster Pocket is depressed, the script sends a pwm output to GPIO 24 (pin 18) of the raspberry pi 5. This output pin is used to drive the base of an NPN PN2222A transistor which drives an active buzzer. 
+
+####  Active Buzzer Wiring
+![alt text](<Active Buzzer Diagram.png>)
+
+#### 🤖 Logic & Behavior
+The VINS-Fusion container runs a background monitor that listens to the `/mavros/rc/out` MAVLink channel. The following audio patterns indicate the current state of the navigation stack:
+
+| Event | Sound Pattern | Meaning / Status |
+| :--- | :--- | :--- |
+| **System Boot** | 🎵 3 Short Beeps | Docker container is live and the monitor script is active. |
+| **Button Pressed** | 🎵 1 Quick Blip | Bumper signal detected from the Radiomaster Pocket. |
+| **VIO Lock** | 🎵 2 Medium Beeps | **VINS STABLE:** Algorithm initialized; VIO is generating state estimation. |
+| **Button De-Pressed** | Short Pause + 🎵 1 Quick Blip | Algorithm Finished & Exited Gracefully |
+
+> When the **VIO Lock** is achieved, the system also pushes a MAVLink statustext message. If you are connected via telemetry to **QGroundControl**, you will hear the audible voice notification: *"VINS STABLE"*.
+
+Happy Testing!
+
 </details>
