@@ -41,6 +41,7 @@ The system is built on a custom quadcopter frame.
 2.  **Magnetic Interference:** The compass is highly sensitive to the high-current wires from the 3-phase motors. **Solution:** You must mount the GPS/Compass module on a mast, at least 8cm away from the main battery and ESC wiring.
 3.  **Initialization:** The system requires complete stillness to initialize the IMU bias, followed by slow, consistent movement to establish the VIO lock.
 4.  **Compute Limits:** The Raspberry Pi 5 cannot run ORB-SLAM3 smoothly in real-time alongside ROS overhead. VINS-Fusion was much more efficient for this architecture.
+5.  **Serial stream rates** Configuring the Aero Selfie H743 RAW IMU Stream Rate too high will overload the flight controller CPU and block out or interfere with critical parameters including GPS. We found 200Hz to be achievable and ideal.
 
 ## 3D Printed Parts & Files
 <img width="1920" height="1080" alt="drone_render" src="https://github.com/user-attachments/assets/6316caf9-ed12-422c-a506-5a72a74fb92b" />
@@ -249,7 +250,6 @@ gyroscope_random_walk: 2.66e-05         # [rad/s^2/sqrt(Hz)]
 rostopic: /mavros/imu/data_raw
 update_rate: 200.0                       # Hz
 ```
-
 ---
 
 ### 📂 Phase B: Processing & Config Generation (Workstation)
@@ -287,6 +287,7 @@ Reference these example configurations based on your calibration results:
 
 <details>
 <summary><b>🔻ArduPilot & MAVLink Configuration - (10 min)</b></summary>
+<a name="ardupilot-mavlink-configuration"></a>
 
 ## Configuring the Flight Controller to Raspberry Pi 5 Data Bridge
 
