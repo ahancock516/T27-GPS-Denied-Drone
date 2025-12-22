@@ -372,14 +372,27 @@ Happy Testing!
 </details>
 
 # 📚 Citations & References
-Algorithms & Software
-**VINS-Fusion**: Qin, T., Li, P., & Shen, S. (2018). VINS-Mono: A Robust and Versatile Monocular Visual-Inertial State Estimator. IEEE Transactions on Robotics. GitHub Repository <br>
-**ORB-SLAM3**: Campos, C., Elvira, R., Rodríguez, J. J. G., Montiel, J. M., & Tardós, J. D. (2021). ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual–Inertial, and Multi-Map SLAM. IEEE Transactions on Robotics. GitHub Repository <br>
-**Kalibr**: Furgale, P., Rehder, J., & Siegwart, R. (2013). Unified Temporal and Spatial Calibration for Multi-Sensor Systems. IEEE/RSJ International Conference on Intelligent Robots and Systems. GitHub Repository <br>
 
-Flight Stack
-**ArduPilot**: ArduPilot Development Team. ArduCopter: An open-source multirotor flight control system. Documentation <br>
-**MAVROS**: MAVLink to ROS Gateway. GitHub Repository <br>
+## Algorithms & Software
 
-Team 27 | GPS-Denied Navigation Project
-Special thanks to the HKUST Aerial Robotics Group for their foundational work on Visual-Inertial Odometry.
+**VINS-Fusion**  
+Qin, T., Li, P., & Shen, S. (2018). *VINS-Mono: A Robust and Versatile Monocular Visual-Inertial State Estimator.* IEEE Transactions on Robotics. [GitHub Repository](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion)
+
+**ORB-SLAM3**  
+Campos, C., Elvira, R., Rodríguez, J. J. G., Montiel, J. M., & Tardós, J. D. (2021). *ORB-SLAM3: An Accurate Open-Source Library for Visual, Visual–Inertial, and Multi-Map SLAM.* IEEE Transactions on Robotics. [GitHub Repository](https://github.com/UZ-SLAMLab/ORB_SLAM3)
+
+**Kalibr**  
+Furgale, P., Rehder, J., & Siegwart, R. (2013). *Unified Temporal and Spatial Calibration for Multi-Sensor Systems.* IEEE/RSJ International Conference on Intelligent Robots and Systems. [GitHub Repository](https://github.com/ethz-asl/kalibr)
+
+## Flight Stack
+
+**ArduPilot**  
+ArduPilot Development Team. *ArduCopter: An open-source multirotor flight control system.* [Documentation](https://ardupilot.org/copter/)
+
+**MAVROS**  
+*MAVLink to ROS Gateway.* [GitHub Repository](https://github.com/mavlink/mavros)
+
+---
+
+**Team 27 | GPS-Denied Navigation Project**  
+*Special thanks to the HKUST Aerial Robotics Group for their foundational work on Visual-Inertial Odometry.*
