@@ -47,13 +47,20 @@ The system is built on a custom quadcopter frame.
 
 | Part Name | Qty | Description | Material |
 | :--- | :--- | :--- | :--- |
-| [`ai_drone_arm.stl`](3D_Print/ai_drone_arm.stl) | 4 | Motor arms | PLA |
+| [`ai_drone_arm.stl`](3D_Print/ai_drone_arm.stl) | 4 | **Original:** [GreatScott!Motor Arm](https://www.printables.com/model/196607)  | PLA |
 | [`ai_drone_bottom_chassis.stl`](3D_Print/ai_drone_bottom_chassis.stl) | 1 | Chassis Bottom | PLA |
 | [`ai_drone_camera_hinge_back.stl`](3D_Print/ai_drone_camera_hinge_back.stl) | 1 | Camera Base Mount | TPU |
 | [`ai_drone_camera_hinge_front.stl`](3D_Print/ai_drone_camera_hinge_front.stl) | 1 | Camera Mount | TPU |
 | [`ai_drone_top_chassis.stl`](3D_Print/ai_drone_top_chassis.stl) | 1 | Chassis Top | PLA |
 | [`ai_drone_under_plate.stl`](3D_Print/ai_drone_under_plate.stl) | 1 | Chassis Under Plate | PLA |
+| [`ai_drone_gps_mast.gcode.3mf`](3D_Print/GPS_Mast_55mm.gcode.3mf)| 1 | **Modified:** [3D_Noob!Mark4 V2 GPS Front Mount](https://makerworld.com/en/models/1512793) GPS Mast | PLA |
+| [`ai_drone_rear_gps_mast.gcode.3mf`](3D_Print/Rear_GPS_Mount.gcode.3mf)| 1 | **Modified:** [GreatScott!Back mount_V2](https://www.printables.com/model/196607)| PLA |
 *note all are printed at 30% gyroid infill.
+
+### Additional Design Credits (Testing & Prototypes)
+* **GPS Front Mount:** During the prototyping phase, we utilized a modified version of the [Mark4 V2 GPS Front Mount](https://makerworld.com/en/models/1512793) by **3D_Noob**. 
+    * **Modification:** The mount was vertically extended to 55mm to evaluate signal interference reduction. 
+    * **Status:** This component was used for experimental validation and is included in the legacy files for reference. Licensed under **CC BY 4.0**.
 
 ## System Payload
 ![Drone Payload](https://github.com/user-attachments/assets/41458662-f246-4f83-a422-26ed67716800)
@@ -364,7 +371,11 @@ The VINS-Fusion container runs a background monitor that listens to the `/mavros
 | **VIO Lock** | 🎵 2 Medium Beeps | **VINS STABLE:** Algorithm initialized; VIO is generating state estimation. |
 | **Button De-Pressed** | Short Pause + 🎵 1 Quick Blip | Algorithm Finished & Exited Gracefully |
 
+
+> ⚠️ **Important:** See `vinsfusion_ws/config/calibration_results.yaml` for example formatting of the resulting matrices used in the SLAM nodes.
+=======
 > When the **VIO Lock** is achieved, the system also pushes a MAVLink statustext message. If you are connected via telemetry to **QGroundControl**, you will hear the audible voice notification: *"VINS STABLE"*.
+
 
 Happy Testing!
 
@@ -383,7 +394,11 @@ Campos, C., Elvira, R., Rodríguez, J. J. G., Montiel, J. M., & Tardós, J. D. (
 **Kalibr**  
 Furgale, P., Rehder, J., & Siegwart, R. (2013). *Unified Temporal and Spatial Calibration for Multi-Sensor Systems.* IEEE/RSJ International Conference on Intelligent Robots and Systems. [GitHub Repository](https://github.com/ethz-asl/kalibr)
 
+
+> 💡 **Note:** ORB-SLAM3 and VINS-Fusion require the inverse of the rotation matrix provided by Kalibr. This is handled by the scripts provided in the Kalibr fork i have created to automatically convert the Kalibr results to the required configuration files.
+
 ## Flight Stack
+
 
 **ArduPilot**  
 ArduPilot Development Team. *ArduCopter: An open-source multirotor flight control system.* [Documentation](https://ardupilot.org/copter/)
@@ -393,5 +408,74 @@ ArduPilot Development Team. *ArduCopter: An open-source multirotor flight contro
 
 ---
 
+
+---
+
+## 👥 Acknowledgments & Project Team
+
+This project was developed under the auspices of the **Center for Connected Autonomy and Artificial Intelligence (CA-AI)**.
+
+### 🎓 Project Supervision
+| Name | Role | Affiliation |
+| :--- | :--- | :--- |
+| **Dr. Georgios Sklivanitis** | Project Advisor | CA-AI Senior Member |
+| **Gabriel Garcia** | Project Manager | CA-AI Graduate Research Assistant |
+| **Jacob Kahn** | Remote Pilot in Command | CA-AI Graduate Research Assistant |
+
+### 🛠️ Team 27 Development Group
+| Name | Primary Responsibility | Focus Area |
+| :--- | :--- | :--- |
+| **Aaron Hancock** | **Lead Systems Integration** | VINS-Fusion, Calibration, & Dockerization |
+| **Jonathan Castellanos** | **Flight Systems Lead** | Motor Mapping, Calibration, & Field Ops |
+| **Steve Pomeroy** | **Operations Support** | Airframe Maintenance & Structural Rebuilds |
+| **David Gallegos Moreno** | **Systems Technician** | Hardware Troubleshooting & Logistics |
+| **Benjamin Borden** | **Research Associate** | ORB-SLAM3 Framework Analysis |
+
+---
+
+## 📖 Citations & References
+
+We extend our gratitude to the open-source community and the researchers whose foundational work made this project possible.
+
+### Core Software Frameworks
+* **[VINS-Fusion](https://github.com/HKUST-Aerial-Robotics/VINS-Fusion)** – Optimization-based multi-sensor state estimator (HKUST Aerial Robotics Group).
+* **[ArduPilot](https://ardupilot.org/)** – Professional-grade open-source autopilot software.
+* **[Kalibr](https://github.com/ethz-asl/kalibr)** – Visual-inertial calibration toolbox (ETH Zürich, ASL).
+* **[MAVROS](https://github.com/mavlink/mavros)** – MAVLink to ROS gateway.
+
+### Academic References
+> [!NOTE]
+> If utilizing this work for research, please cite the following foundational papers:
+
+* **VINS-Mono/Fusion:** Qin, T., Li, P., & Shen, S. (2018). *VINS-Mono: A Robust and Versatile Monocular Visual-Inertial State Estimator*. IEEE Transactions on Robotics.
+* **State Estimation:** Qin, T., Cao, S., Pan, J., & Shen, S. (2019). *A General Optimization-based Framework for Local Odometry and Global Geodetic Pose Estimation*. arXiv:1901.03638.
+* **Calibration:** Furgale, P., Rehder, J., & Siegwart, R. (2013). *Unified Temporal and Spatial Calibration for Multi-Sensor Systems*. IEEE/RSJ (IROS).
+* **Inertial Navigation:** Woodman, O. J. (2007). *An introduction to inertial navigation*. University of Cambridge Technical Report.
+
+---
+
+## ⚖️ License & Attribution
+
+### Software
+The original source code, ROS configurations, and Docker environment files are licensed under the **MIT License**.
+
+### Hardware & 3D Designs
+This project utilizes a hybrid airframe consisting of original designs and modified third-party components.
+
+#### 🚁 Primary Airframe (GreatScott!)
+The Motor Arms and the base geometry for the Camera Hinge are sourced from the [FPV Drone by GreatScott!](https://www.printables.com/model/196607-fpv-drone-featured-on-greatscott).
+* **License:** [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+* **Attribution:** Includes original Motor Arms and a modified (Derivative Work) version of the Rear Mount V2.
+
+#### 📡 Experimental Components (3D_Noob)
+The legacy GPS testing mount is based on the [Mark4 V2 GPS Front Mount](https://makerworld.com/en/models/1512793) by 3D_Noob.
+* **License:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+* **Attribution:** Modified to a 55mm height and widened mounting pattern for experimental interference testing.
+
+> [!IMPORTANT]
+> In accordance with the **ShareAlike (SA)** clause of the GreatScott! license, any further modifications to the `ai_drone_arm.stl` or `ai_drone_gps_mast.gcode.3mf` must also be shared under the same CC BY-NC-SA 4.0 terms.
+
 **Team 27 | GPS-Denied Navigation Project**  
 *Special thanks to the HKUST Aerial Robotics Group for their foundational work on Visual-Inertial Odometry.*
+
+]
