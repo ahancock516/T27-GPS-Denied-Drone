@@ -43,7 +43,6 @@ The system is built on a custom quadcopter frame.
 
 ## 3D Printed Parts & Files
 <img width="1920" height="1080" alt="drone_render" src="https://github.com/user-attachments/assets/6316caf9-ed12-422c-a506-5a72a74fb92b" />
---Link to 3D Print Repository--
 
 | Part Name | Qty | Description | Material |
 | :--- | :--- | :--- | :--- |
@@ -54,7 +53,7 @@ The system is built on a custom quadcopter frame.
 | [`ai_drone_top_chassis.stl`](3D_Print/ai_drone_top_chassis.stl) | 1 | Chassis Top | PLA |
 | [`ai_drone_under_plate.stl`](3D_Print/ai_drone_under_plate.stl) | 1 | Chassis Under Plate | PLA |
 | [`ai_drone_gps_mast.gcode.3mf`](3D_Print/GPS_Mast_55mm.gcode.3mf)| 1 | **Modified:** [3D_Noob!Mark4 V2 GPS Front Mount](https://makerworld.com/en/models/1512793) GPS Mast | PLA |
-| [`ai_drone_rear_gps_mount.gcode.3mf`](3D_Print/Rear_GPS_Mount.gcode.3mf)| 1 | **Modified:** [GreatScott!Back mount_V2](https://www.printables.com/model/196607)| PLA |
+| [`ai_drone_rear_gps_mount.stl`](3D_Print/ai_drone_rear_gps_mount.stl)| 1 | **Modified:** [GreatScott!Back mount_V2](https://www.printables.com/model/196607)| PLA |
 *note all are printed at 30% gyroid infill.
 
 ### Additional Design Credits (Testing & Prototypes)
@@ -399,7 +398,6 @@ Furgale, P., Rehder, J., & Siegwart, R. (2013). *Unified Temporal and Spatial Ca
 
 ## Flight Stack
 
-
 **ArduPilot**  
 ArduPilot Development Team. *ArduCopter: An open-source multirotor flight control system.* [Documentation](https://ardupilot.org/copter/)
 
@@ -473,7 +471,8 @@ The legacy GPS testing mount is based on the [Mark4 V2 GPS Front Mount](https://
 * **Attribution:** Modified to a 55mm height and widened mounting pattern for experimental interference testing.
 
 > [!IMPORTANT]
-> In accordance with the **ShareAlike (SA)** clause of the GreatScott! license, any further modifications to the `ai_drone_rear_gps_mount.gcode.3mf` or `ai_drone_gps_mast.gcode.3mf` must also be shared under the same CC BY-NC-SA 4.0 terms.
+> In accordance with the **ShareAlike (SA)** clause of the GreatScott! license, any further modifications to the `ai_drone_rear_gps_mount.stl` or `ai_drone_gps_mast.gcode.3mf` must also be shared under the same CC BY-NC-SA 4.0 terms.
 
 **Team 27 | GPS-Denied Navigation Project**  
 *Special thanks to the HKUST Aerial Robotics Group for their foundational work on Visual-Inertial Odometry.*
+
